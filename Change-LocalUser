@@ -17,6 +17,7 @@ function get-vm-localuser
        Get-LocalUser | where {$_.name -eq 'sysadm1'} | Set-LocalUser -FullName 'System Admin - DCM (RJ)';
        Get-LocalUser | where {$_.name -eq 'sysadm2'} | Set-LocalUser -FullName 'System Admin 2 - DCM (MMM)';
        Get-LocalUser | where {$_.name -eq 'sysadm3'} | Set-LocalUser -FullName 'System Admin 3 - DCM (TK)';
+       Get-LocalUser | where {$_.name -eq 'sysadm3'} | Enable-LocalUser;
        Get-LocalUser | where {$_.name -eq 'sysadm4'} | Set-LocalUser -FullName 'System Admin 4 - (TBD)';
        Get-LocalUser | where {$_.name -eq 'sysadm4'} | Disable-LocalUser;
        Get-LocalUser | where {$_.name -match 'sysadm'}
