@@ -33,9 +33,7 @@ function get-vm-localuser-updated
    {
        Invoke-Command -ComputerName $v -Credential $cred -ScriptBlock {
        Get-LocalUser | where {$_.name -match 'sysadm'}} | select @{name='UserName'; expression = {$_.name}} , fullname, @{name='Hostname'; expression= {$_.pscomputername}}
- 
-
-   }
+    }
 }
 
 get-vm-localuser-updated | Format-Table -AutoSize -GroupBy hostname
