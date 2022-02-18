@@ -1,0 +1,40 @@
+<#
+
+This is the script for amending user display name and disabling user for local group
+
+by LWX
+
+#>
+
+$vms = Get-Content -Path C:\temp\test.txt #save all vm in .txt file, one vm per line
+$cred = Get-Credential khazanah\'' #key in username in ' ' and remove the ''
+
+function get-vm-localuser
+{
+   ForEach ($vm in $vms)
+   {
+       Invoke-Command -ComputerName $vm -Credential $cred -ScriptBlock {
+       Get-LocalUser | where {$_.name -eq 'sysadm1'} | Set-LocalUser -FullName 'System Admin - DCM (RJ)';
+       Get-LocalUser | where {$_.name -eq 'sysadm2'} | Set-LocalUser -FullName 'System Admin 2 - DCM (MMM)';
+       Get-LocalUser | where {$_.name -eq 'sysadm3'} | Set-LocalUser -FullName 'System Admin 4 - DCM (TK)';
+       Get-LocalUser | where {$_.name -eq 'sysadm4'} | Set-LocalUser -FullName 'System Admin 4 - (TBD)';
+       Get-LocalUser | where {$_.name -eq 'sysadm4'} | Disable-LocalUser;
+       Get-LocalUser | where {$_.name -match 'sysadm'}
+       }
+   }
+}
+
+$updatedvm = (get-vm-localuser).PSComputerName | Get-Unique
+
+function get-vm-localuser-updated
+{
+   ForEach ($v in $updatedvm)
+   {
+       Invoke-Command -ComputerName $v -Credential $cred -ScriptBlock {
+       Get-LocalUser | where {$_.name -match 'sysadm'}} | select @{name='UserName'; expression = {$_.name}} , fullname, @{name='Hostname'; expression= {$_.pscomputername}}
+ 
+
+   }
+}
+
+get-vm-localuser-updated | Format-Table -AutoSize -GroupBy hostname
