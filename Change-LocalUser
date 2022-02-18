@@ -31,7 +31,7 @@ function get-vm-localuser-updated
    ForEach ($v in $updatedvm)
    {
        Invoke-Command -ComputerName $v -Credential $cred -ScriptBlock {
-       Get-LocalUser | Where-Object {$_.name -match 'sysadm'}} | select @{name='UserName'; expression = {$_.name}} , fullname, @{name='Hostname'; expression= {$_.pscomputername}}
+       Get-LocalUser | Where-Object {$_.name -match 'sysadm'}} | Select-Object @{name='UserName'; expression = {$_.name}} , fullname, @{name='Hostname'; expression= {$_.pscomputername}}
     }
 }
 
