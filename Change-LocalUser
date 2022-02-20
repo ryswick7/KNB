@@ -13,6 +13,8 @@ Set-VM-LocalUser
 Created by ryswick7
 18/2/2022 First release
 21/2/2022 Script enhancements
+
+For local user password management, this might be a better solution, instead of running script reference: https://www.microsoft.com/en-us/download/details.aspx?id=46899
 #>
 
 $cred = Get-Credential
