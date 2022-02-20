@@ -14,7 +14,8 @@ Created by ryswick7
 18/2/2022 First release
 21/2/2022 Script enhancements
 
-For local user password management, this might be a better solution, instead of running script reference: https://www.microsoft.com/en-us/download/details.aspx?id=46899
+1. For local user password management, this might be a better solution, instead of running script reference: https://www.microsoft.com/en-us/download/details.aspx?id=46899
+2. IMPORTANT!! before running this script, ensure the targeted computer is enabled for PSRemoting (See Get-Help Enable-PSRemoting) and WinRM ports are enabled ()
 #>
 
 $cred = Get-Credential
