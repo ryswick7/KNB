@@ -1,38 +1,39 @@
 <#
-
-This is the script for amending user display name and disabling user for local group
-by LWX
-
+.SYNOPSIS
+Set-VM-LocalUser changes the specified users' fullname and disables some of the user. 
+.DESCRIPTION
+Set-VM-LocalUser requires Microsoft.Powershell.LocalAccounts module to configure the local user settings. Microsoft.Powershell.LocalAccounts module comes as part of the Windows Management Framework (WMF) v5.1 
+.PARAMETER computername
+The computer name, or names, to query. Default: Localhost.
+.EXAMPLE
+Set-VM-LocalUser -computername VWAPPP10, VWSDBP10, VWWEBP10 
+Set-VM-LocalUser -computername VWLETP01 | export-csv -path C:\Temp\Server.csv
+Set-VM-LocalUser 
+.NOTES
+Created by ryswick7
+18/2/2022 First release
+21/2/2022 Script enhancements
 #>
 
-$vms = Get-Content -Path C:\temp\test.txt #save all vm in .txt file, one vm per line
-$cred = Get-Credential khazanah\'' #key in username in ' ' and remove the ''
+$cred = Get-Credential
 
-function get-vm-localuser
+function Set-VM-LocalUser
 {
-   ForEach ($vm in $vms)
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$false)]
+        [string[]]$computername = 'localhost'        
+    )
+   
+    ForEach ($vm in $computername)
    {
        Invoke-Command -ComputerName $vm -Credential $cred -ScriptBlock {
-       Get-LocalUser | Where-Object {$_.name -eq 'sysadm1'} | Set-LocalUser -FullName 'System Admin - DCM (RJ)';
-       Get-LocalUser | Where-Object {$_.name -eq 'sysadm2'} | Set-LocalUser -FullName 'System Admin 2 - DCM (MMM)';
-       Get-LocalUser | Where-Object {$_.name -eq 'sysadm3'} | Set-LocalUser -FullName 'System Admin 3 - DCM (TK)';
-       Get-LocalUser | Where-Object {$_.name -eq 'sysadm3'} | Enable-LocalUser;
-       Get-LocalUser | Where-Object {$_.name -eq 'sysadm4'} | Set-LocalUser -FullName 'System Admin 4 - (TBD)';
-       Get-LocalUser | Where-Object {$_.name -eq 'sysadm4'} | Disable-LocalUser;
-       Get-LocalUser | Where-Object {$_.name -match 'sysadm'}
-       }
+            Get-LocalUser | Where-Object {$_.name -eq 'sysadm1'} | Set-LocalUser -FullName 'System Admin - DCM (RJ)';
+            Get-LocalUser | Where-Object {$_.name -eq 'sysadm2'} | Set-LocalUser -FullName 'System Admin 2 - DCM (MMM)';
+            Get-LocalUser | Where-Object {$_.name -eq 'sysadm3'} | Set-LocalUser -FullName 'System Admin 3 - DCM (TK)';
+            Get-LocalUser | Where-Object {$_.name -eq 'sysadm4'} | Set-LocalUser -FullName 'System Admin 4 - (TBD)';
+            Get-LocalUser | Where-Object {$_.name -eq 'sysadm4'} | Disable-LocalUser;
+            Get-LocalUser | Where-Object {$_.name -match 'sysadm'}
+       } | Select-Object -Property name, fullname, enabled, @{name='Hostname';expression={$_.pscomputername}}
    }
 }
-
-$updatedvm = (get-vm-localuser).PSComputerName | Get-Unique
-
-function get-vm-localuser-updated
-{
-   ForEach ($v in $updatedvm)
-   {
-       Invoke-Command -ComputerName $v -Credential $cred -ScriptBlock {
-       Get-LocalUser | Where-Object {$_.name -match 'sysadm'}} | Select-Object @{name='UserName'; expression = {$_.name}} , fullname, @{name='Hostname'; expression= {$_.pscomputername}}
-    }
-}
-
-get-vm-localuser-updated | Format-Table -AutoSize -GroupBy hostname
