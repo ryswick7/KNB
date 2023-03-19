@@ -32,7 +32,7 @@ foreach ($user in $ADUserList)
             State                   = $user.StateNames
             ChangePasswordAtLogon   = $True
             PasswordNeverExpires    = $False
-            AccountPassword         = (ConvertTo-SecureString "P@ssw0rd12131415" -AsPlainText -Force)
+            AccountPassword         = (ConvertTo-SecureString "yourpassword" -AsPlainText -Force)
             
         }
             
