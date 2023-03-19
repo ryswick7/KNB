@@ -5,8 +5,8 @@ Should you need to use for other customers, this script has to be customized to 
 
 You may create your own function using this script, if you have the time
 
-Created by Leewx
-20230319
+Created by LWX
+20230319 First Release
 #>
 
 #create variable for csv path
